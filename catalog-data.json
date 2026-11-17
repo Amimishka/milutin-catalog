@@ -1,0 +1,42 @@
+[
+  {
+    "title": "Гранат многогранный",
+    "slug": "garnat-mnogogrannyy",
+    "template": "arch",
+    "image": "garnet-necklace.jpg",
+    "materials": "Золото 585 · гранаты",
+    "sortOrder": 1
+  },
+  {
+    "title": "Мыльные пузыри",
+    "slug": "mylnye-puzyri",
+    "template": "arch",
+    "image": "bubble-ring.jpg",
+    "materials": "Золото 585 · титан · бриллианты",
+    "sortOrder": 2
+  },
+  {
+    "title": "Маки",
+    "slug": "maki",
+    "template": "portrait",
+    "image": "poppy-earrings.jpg",
+    "materials": "Золото 585 · спессартин · титан",
+    "sortOrder": 3
+  },
+  {
+    "title": "Точка равновесия",
+    "slug": "tochka-ravnovesiya",
+    "template": "wide",
+    "image": "balance.jpg",
+    "materials": "Золото 585 · демантоиды · бриллианты",
+    "sortOrder": 4
+  },
+  {
+    "title": "Предметы искусства",
+    "slug": "predmety-iskusstva",
+    "template": "wide",
+    "image": "art.jpg",
+    "materials": "Золото 585 · гранат · титан",
+    "sortOrder": 5
+  }
+]
