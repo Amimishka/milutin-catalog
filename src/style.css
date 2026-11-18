@@ -128,7 +128,7 @@ body:has(dialog[open]) { overflow: hidden; }
 .card-photo--uploaded { inset: 1% 4% auto; height: 67%; overflow: hidden; }
 .card-photo--uploaded img { width: 100%; height: 125%; object-fit: cover; object-position: center top; }
 .frame-caption {
-  position: absolute; inset: 68.3% 7.5% auto; height: 16%; display: flex; align-items: center; justify-content: center;
+  position: absolute; inset: 68.3% 7.5% auto; height: 16%; display: flex; align-items: center; justify-content: flex-start;
   gap: 2.6cqw; color: #30271e; text-align: left;
 }
 [data-frame=wine] .frame-caption { top: 68%; height: 15.2%; }
@@ -138,8 +138,8 @@ body:has(dialog[open]) { overflow: hidden; }
   font: 500 22cqw/.85 var(--serif); border: 3px double #675338; outline: 1px solid #a38b67; outline-offset: 2px;
   background: repeating-linear-gradient(45deg,transparent 0 3px,#8c78582b 3px 4px);
 }
-.caption-copy { display: grid; gap: 1.4cqw; min-width: 0; }
-.caption-copy strong { font: 600 7.7cqw/.94 var(--serif); text-transform: uppercase; overflow-wrap: anywhere; }
+.caption-copy { display: grid; gap: 1.4cqw; min-width: 0; flex: 1; }
+.caption-copy strong { font: 600 5.4cqw/1.02 var(--serif); text-transform: uppercase; overflow-wrap: anywhere; }
 .caption-copy small { font: 600 3.65cqw/1.1 var(--serif); }
 .card--wide { grid-column: span 3; }
 .card--wide .card-button { display: grid; grid-template-columns: 49% 51%; align-items: center; }

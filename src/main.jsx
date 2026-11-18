@@ -48,7 +48,7 @@ function Card({item, index = 0, onClick, preview = false}) {
           <img className="frame-art" src={displayImage(frame)} alt="" loading="lazy"/>
           <span className="frame-caption">
             <span className="caption-initial" aria-hidden="true">{title[0]}</span>
-            <span className="caption-copy"><strong style={{fontSize: `min(7.7cqw, ${76 / Math.max(...title.split(/\s+/).map(word => word.length))}cqw)`}}>{title}</strong><small>{item.materials || 'Материалы изделия'}</small></span>
+            <span className="caption-copy"><strong>{title}</strong><small>{item.materials || 'Материалы изделия'}</small></span>
           </span>
         </span>
         {wide && <span className="wide-copy"><Ornament kind="fleur"/><strong>{title}</strong><span>{item.materials}</span><Ornament/></span>}
