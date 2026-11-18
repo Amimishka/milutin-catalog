@@ -1,19 +1,119 @@
 import React, {useEffect, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import seed from '../catalog-data.json';
+import './editor.css';
 import './style.css';
 
-const images = import.meta.glob('../product-images/**/*.jpg', {eager:true, query:'?url', import:'default'});
-const pick = (folder, file='1.jpg') => Object.entries(images).find(([path]) => path.normalize('NFC').toLowerCase().includes('/'+folder.normalize('NFC').toLowerCase()+'/') && path.endsWith('/'+file))?.[1];
-const folders = ['гранат многогранный','мыльные пузыри','маки','точка равновесия','предметы искусства'];
-const defaults = seed.map((item, i) => ({...item, image: pick(folders[i]), shortDescription: 'Авторское украшение из коллекции «'+item.title+'».', published:true, initial:true}));
+const originals = import.meta.glob([
+  '../product-images/баннеры/гранат*/1.jpg', '../product-images/мыльные пузыри/2.jpg',
+  '../product-images/маки/2.jpg', '../product-images/точка равновесия/1.jpg',
+  '../product-images/предметы искусства/1.jpg'
+], {eager: true, query: '?url', import: 'default'});
+const defaults = seed.map(item => {
+  const folder = '/' + item.title.normalize('NFC').toLowerCase() + '/';
+  const image = Object.entries(originals).find(([path]) => path.normalize('NFC').includes(folder))?.[1];
+  return {...item, image, shortDescription: 'Авторское украшение из коллекции «' + item.title + '».', published: true, initial: true};
+});
 const KEY='milutin-demo-cards-v1';
 function readCards(){ try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch {return [];} }
 const roman = n => { const pairs=[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']]; let result=''; for(const [value, symbol] of pairs) while(n>=value){result+=symbol;n-=value;} return result; };
-function Ornament(){return <div className="ornament" aria-hidden="true"/>}
-function Card({item,index=0,onClick,preview=false}){return <article className={'card card--'+item.template}><button type="button" className="card-button" onClick={onClick} disabled={preview} aria-label={'Подробнее: '+item.title}><div className="card-top"><span>{roman(index+1)}</span><span>✧</span></div><div className="card-image-wrap"><div className="pointed"><img src={item.image} alt={item.title}/></div></div><div className="card-caption"><div><span className="eyebrow">КОЛЛЕКЦИЯ {String(index+1).padStart(2,'0')}</span><h3>{item.title || 'Название изделия'}</h3><p>{item.materials || 'Материалы изделия'}</p></div><span className="card-arrow">↗</span></div></button></article>}
-function Modal({item,onClose}){useEffect(()=>{if(!item)return; const handler=e=>e.key==='Escape'&&onClose(); document.addEventListener('keydown',handler);return()=>document.removeEventListener('keydown',handler)},[item,onClose]);if(!item)return null;return <div className="modal-backdrop" onClick={onClose}><div className="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" onClick={e=>e.stopPropagation()}><button className="modal-close" onClick={onClose} aria-label="Закрыть">×</button><img src={item.image} alt={item.title}/><div className="modal-copy"><span className="eyebrow">АВТОРСКАЯ КОЛЛЕКЦИЯ</span><h2 id="modal-title">{item.title}</h2><p className="modal-materials">{item.materials}</p><div className="fine-line"/><p>{item.shortDescription}</p><a className="text-link" href="mailto:atelier@example.com?subject=Уточнить наличие">Уточнить наличие ↗</a></div></div></div>}
-function Storefront(){const [selected,setSelected]=useState(null),[menu,setMenu]=useState(false);const cards=[...defaults,...readCards()].filter(x=>x.published).sort((a,b)=>a.sortOrder-b.sortOrder);return <><header className="hero" id="top"><div className="hero-shade"/><nav className="nav"><a href="#top" className="monogram" aria-label="На главную">М</a><button className="menu-toggle" onClick={()=>setMenu(!menu)} aria-expanded={menu}>МЕНЮ <span>{menu?'×':'☰'}</span></button><div className={'nav-links '+(menu?'is-open':'')} onClick={()=>setMenu(false)}><a href="#collections">Коллекции</a><a href="#atelier">Мастерская</a><a href="#about">Об авторе</a><a href="#process">Процесс</a><a href="#atelier">Ателье</a><a href="#contacts">Контакты</a></div></nav><div className="hero-content"><p className="hero-kicker">АВТОРСКОЕ ЮВЕЛИРНОЕ ИСКУССТВО <span>✧</span> МОСКВА</p><h1>Михаил<br/><em>Милютин</em></h1><Ornament/><p className="hero-subtitle">Драгоценности вне времени</p><div className="hero-jewel"><img src={defaults[0].image} alt="Колье из коллекции Гранат многогранный"/></div><p className="hero-label">ГРАНАТ МНОГОГРАННЫЙ <span> / </span> КОЛЛЕКЦИЯ I</p></div><div className="hero-side left">ИСКУССТВО <span/> ФОРМА <span/> МАТЕРИЯ</div><div className="hero-side right">СОЗДАНО ВРУЧНУЮ <span/> ВНЕ ВРЕМЕНИ</div><a className="scroll-cue" href="#collections">ЛИСТАТЬ ВНИЗ <span>↓</span></a></header><main><section className="catalog" id="collections"><div className="section-intro"><span className="eyebrow">МИХАИЛ МИЛЮТИН / АВТОРСКИЕ РАБОТЫ</span><h2>Коллекции</h2><Ornament/><p>Украшения, в которых встречаются характер камня,<br className="desktop-only"/> точность формы и искусство ручной работы.</p></div><div className="catalog-meta"><span>ИЗБРАННЫЕ РАБОТЫ</span><span>01 — {String(cards.length).padStart(2,'0')}</span></div><div className="catalog-grid">{cards.map((item,i)=><Card key={item.slug} item={item} index={i} onClick={()=>setSelected(item)}/>)}</div></section><section className="story" id="about"><div className="story-mark">М</div><div><span className="eyebrow" id="atelier">МАСТЕРСКАЯ МИХАИЛА МИЛЮТИНА</span><h2>Красота в деталях.<br/><em>Характер в каждом изделии.</em></h2><p id="process">Авторские украшения — это диалог формы, материала и мастерства. Каждая коллекция раскрывает собственную историю, сохраняя внимание к мельчайшим деталям.</p><a href="#contacts" className="text-link">СВЯЗАТЬСЯ С АТЕЛЬЕ ↗</a></div></section></main><footer id="contacts"><a href="#top" className="footer-logo">М</a><div><span>МИХАИЛ МИЛЮТИН</span><p>Драгоценности вне времени</p></div><div className="footer-links"><a href="mailto:atelier@example.com">СВЯЗАТЬСЯ С АТЕЛЬЕ ↗</a><a href="/editor">ДЕМО РЕДАКТОРА ↗</a></div><span className="footer-copy">© МИХАИЛ МИЛЮТИН</span></footer><Modal item={selected} onClose={()=>setSelected(null)}/></>}
+const crops = import.meta.glob('../assets/display/{teal,wine,poppy,divider,fleur,finial,garnet,bubbles,poppies,balance,objects,necklace}.webp', {eager:true, query:'?url', import:'default'});
+const displayImage = name => crops[`../assets/display/${name}.webp`];
+const coverNames = {
+  'garnat-mnogogrannyy': 'garnet', 'mylnye-puzyri': 'bubbles', maki: 'poppies',
+  'tochka-ravnovesiya': 'balance', 'predmety-iskusstva': 'objects'
+};
+const frameNames = {'mylnye-puzyri':'wine', maki:'poppy'};
+const templateFrames = {arch:'teal', portrait:'wine', wide:'poppy'};
+
+function Ornament({kind = 'divider'}) {
+  return <img className={'ornament ornament--' + kind} src={displayImage(kind)} alt="" aria-hidden="true"/>;
+}
+
+function Card({item, index = 0, onClick, preview = false}) {
+  const title = item.title.trim() || 'Название изделия';
+  const cover = item.initial ? displayImage(coverNames[item.slug]) : item.image;
+  const frame = (item.initial && frameNames[item.slug]) || templateFrames[item.template];
+  const wide = item.template === 'wide';
+  return (
+    <article className={`card card--${item.template}`}>
+      <button type="button" className="card-button" onClick={onClick} disabled={preview} aria-label={'Подробнее о коллекции «' + title + '»'}>
+        <span className="card-number" aria-hidden="true">{roman(index + 1)}</span>
+        <span className="card-frame" data-frame={frame}>
+          <span className="card-aperture"><span className={'card-photo' + (item.initial ? '' : ' card-photo--uploaded')}>
+            <img src={cover || item.image} alt="" loading="lazy"/>
+          </span></span>
+          <img className="frame-art" src={displayImage(frame)} alt="" loading="lazy"/>
+          <span className="frame-caption">
+            <span className="caption-initial" aria-hidden="true">{title[0]}</span>
+            <span className="caption-copy"><strong style={{fontSize: `min(7.7cqw, ${76 / Math.max(...title.split(/\s+/).map(word => word.length))}cqw)`}}>{title}</strong><small>{item.materials || 'Материалы изделия'}</small></span>
+          </span>
+        </span>
+        {wide && <span className="wide-copy"><Ornament kind="fleur"/><strong>{title}</strong><span>{item.materials}</span><Ornament/></span>}
+      </button>
+    </article>
+  );
+}
+
+function Modal({item, onClose}) {
+  const ref = React.useRef(null);
+  useEffect(() => {
+    if (item) ref.current.showModal();
+    else if (ref.current.open) ref.current.close();
+  }, [item]);
+  return (
+    <dialog ref={ref} className="modal" aria-labelledby="modal-title" onClose={onClose} onClick={e => {if(e.target === ref.current) onClose()}}>
+      {item && <div className="modal-body">
+        <button className="modal-close" type="button" onClick={onClose} aria-label="Закрыть">×</button>
+        <img className="modal-product" src={item.image} alt={item.title}/>
+        <div className="modal-copy"><span className="eyebrow">Авторская коллекция</span><h2 id="modal-title">{item.title}</h2><Ornament/>
+        <p>{item.materials}</p><p>{item.shortDescription}</p><a className="text-link" href={'mailto:atelier@example.com?subject='+encodeURIComponent('Уточнить наличие · '+item.title)}>Уточнить наличие ↗</a></div>
+      </div>}
+    </dialog>
+  );
+}
+
+const navigation = [['Коллекции','collections'],['Мастерская','atelier'],['Об авторе','about'],['Процесс','process'],['Ателье','atelier'],['Контакты','contacts']];
+
+function Hero({onSelect}) {
+  const [menu, setMenu] = useState(false);
+  return (
+    <header className="hero" id="top" onKeyDown={e => {if(e.key==='Escape') setMenu(false)}}>
+      <nav className="nav" aria-label="Основная навигация">
+        <a href="#top" className="monogram" aria-label="Михаил Милютин, в начало">М</a>
+        <button className="menu-toggle" type="button" aria-expanded={menu} aria-controls="nav-links" onClick={()=>setMenu(!menu)}>{menu?'Закрыть':'Меню'}<span aria-hidden="true">{menu?'×':'☰'}</span></button>
+        <div id="nav-links" className={'nav-links' + (menu?' is-open':'')}>{navigation.map(([label,id])=><a key={label} href={'#'+id} onClick={()=>setMenu(false)}>{label}</a>)}</div>
+      </nav>
+      <div className="hero-heading"><h1><span>Михаил</span><span>Милютин</span></h1><Ornament/><p>Драгоценности<br/>вне времени</p></div>
+      <button className="hero-jewel" type="button" onClick={onSelect} aria-label="Посмотреть колье «Гранат многогранный»"><img src={displayImage('necklace')} alt="Колье из разноцветных гранатов" fetchPriority="high"/></button>
+      <div className="hero-side hero-side--left" aria-hidden="true"><span>ММ</span><Ornament kind="finial"/><span>Москва</span></div>
+      <div className="hero-side hero-side--right" aria-hidden="true"><span>Форма<br/>и материя</span><Ornament kind="finial"/><span>Ателье</span></div>
+      <a className="hero-seal" href="#collections" aria-label="К коллекциям"><Ornament kind="fleur"/></a>
+    </header>
+  );
+}
+
+function Storefront() {
+  const [selected, setSelected] = useState(null);
+  const cards = [...defaults,...readCards()].filter(x=>x.published).sort((a,b)=>a.sortOrder-b.sortOrder);
+  return (
+    <div className="storefront">
+      <Hero onSelect={()=>setSelected(defaults[0])}/>
+      <main>
+        <section className="catalog" id="collections" aria-labelledby="collections-title">
+          <div className="section-title"><Ornament/><h2 id="collections-title">Коллекции</h2><Ornament/></div>
+          <div className="catalog-grid">{cards.map((item,i)=><Card key={item.slug} item={item} index={i} onClick={()=>setSelected(item)}/>)}</div>
+        </section>
+        <section className="story" id="atelier"><Ornament kind="fleur"/><span className="eyebrow" id="about">Мастерская Михаила Милютина</span>
+          <h2>Красота в деталях</h2><p id="process">Авторские украшения — это диалог формы, материала и мастерства. Каждая коллекция раскрывает собственную историю.</p>
+          <a href="#contacts" className="text-link">Связаться с ателье ↗</a>
+        </section>
+      </main>
+      <footer id="contacts"><a href="#collections">Каталог</a><a href="/editor">Демо редактора</a><span className="footer-signature"><Ornament/>Москва · По записи<Ornament/></span><a href="mailto:atelier@example.com">Связаться с ателье ↗</a><a href="#top">Наверх ↑</a></footer>
+      <Modal item={selected} onClose={()=>setSelected(null)}/>
+    </div>
+  );
+}
 const empty={title:'',slug:'',template:'arch',image:'',materials:'',shortDescription:'',sortOrder:6,published:true};
 function Editor(){const [cards,setCards]=useState(readCards),[form,setForm]=useState(empty),[editing,setEditing]=useState(false),[error,setError]=useState('');function save(e){e.preventDefault();if(!form.image){setError('Загрузите главное фото изделия.');return}if([...defaults,...cards].some(c=>c.slug===form.slug)){setError('Такой slug уже используется.');return}const next=[...cards,{...form,sortOrder:Number(form.sortOrder)}];try{localStorage.setItem(KEY,JSON.stringify(next));setCards(next);setForm(empty);setEditing(false);setError('')}catch{setError('Не удалось сохранить фото: возможно, в браузере закончилось место. Попробуйте файл меньшего размера.')}}function remove(slug){const next=cards.filter(c=>c.slug!==slug);localStorage.setItem(KEY,JSON.stringify(next));setCards(next)}function reset(){if(window.confirm('Удалить все добавленные демо-карточки?')){localStorage.removeItem(KEY);setCards([]);setForm(empty);setEditing(false)}}function update(e){const {name,value,type,checked}=e.target;setForm({...form,[name]:type==='checkbox'?checked:value})}function upload(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>setForm(f=>({...f,image:reader.result}));reader.readAsDataURL(file)}return <div className="editor"><header className="editor-header"><a href="/" className="editor-brand">М <span>МИЛЮТИН / ДЕМО</span></a><a href="/" className="editor-view">Открыть каталог ↗</a></header><main className="editor-main"><div className="editor-title"><div><span className="editor-kicker">РАБОЧЕЕ ПРОСТРАНСТВО</span><h1>Редактор каталога</h1><p>Добавляйте изделия в готовую визуальную систему.</p></div><button className="primary" onClick={()=>{setEditing(true);setForm(empty);setError('')}}>＋ Добавить изделие</button></div><div className="editor-note">Демонстрационный режим · Данные сохраняются только в этом браузере и на этом устройстве.</div>{editing&&<section className="editor-workspace"><form onSubmit={save} className="editor-form"><div className="form-heading"><div><span className="editor-kicker">НОВАЯ КАРТОЧКА</span><h2>Данные изделия</h2></div><button type="button" className="plain" onClick={()=>setEditing(false)}>Закрыть ×</button></div><label>Название<input required name="title" value={form.title} onChange={update} placeholder="Например, Гранат многогранный"/></label><label>Slug <small>латинские буквы, цифры и дефисы</small><input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" name="slug" value={form.slug} onChange={update} placeholder="garnat-mnogogrannyy"/></label><fieldset><legend>Шаблон карточки</legend><div className="template-options">{['arch','portrait','wide'].map(t=><label className={form.template===t?'active':''} key={t}><input type="radio" name="template" value={t} checked={form.template===t} onChange={update}/><span>{t}</span><small>{t==='arch'?'Арочная':t==='portrait'?'Вертикальная':'Широкая'}</small></label>)}</div></fieldset><label>Главное фото <small>предметное фото на сером фоне</small><input type="file" accept="image/*" onChange={upload}/></label><label>Материалы<input required name="materials" value={form.materials} onChange={update} placeholder="Золото 585 · гранаты"/></label><label>Короткое описание<textarea required name="shortDescription" value={form.shortDescription} onChange={update} rows="3"/></label><div className="form-row"><label>Порядок в каталоге<input type="number" min="1" max="999" required name="sortOrder" value={form.sortOrder} onChange={update}/></label><label className="check"><input type="checkbox" name="published" checked={form.published} onChange={update}/> Опубликовать</label></div>{error&&<p className="error" role="alert">{error}</p>}<button className="primary" type="submit">Сохранить карточку</button></form><div className="preview"><span className="editor-kicker">ПРЕДПРОСМОТР</span><p>Так карточка будет выглядеть в каталоге</p><Card item={{...form,image:form.image||defaults[0].image}} index={Math.max(0,Number(form.sortOrder)-1)} preview/></div></section>}<section className="editor-list"><div className="list-heading"><div><span className="editor-kicker">КАТАЛОГ</span><h2>Все карточки <span>{defaults.length+cards.length}</span></h2></div><button className="plain" onClick={reset}>Сбросить демо-данные</button></div><div className="list-rows">{[...defaults,...cards].sort((a,b)=>a.sortOrder-b.sortOrder).map(c=><div className="list-row" key={c.slug}><img src={c.image} alt=""/><div><strong>{c.title}</strong><small>{c.template} · порядок {c.sortOrder} · {c.published?'Опубликовано':'Черновик'}</small></div>{!c.initial&&<button className="delete" onClick={()=>remove(c.slug)}>Удалить</button>}</div>)}</div></section></main></div>}
 createRoot(document.getElementById('root')).render(location.pathname.replace(/\/$/,'')==='/editor'?<Editor/>:<Storefront/>);

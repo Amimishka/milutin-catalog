@@ -1,0 +1,53 @@
+.editor{background:#f3f2ef;color:#292d2b;min-height:100vh;font-family:Arial,sans-serif}
+.editor-header{background:#252a27;color:#fff;padding:20px 6%;display:flex;justify-content:space-between;align-items:center}
+.editor-brand{font:36px 'Cormorant Garamond',serif}
+.editor-brand span{font:600 10px Arial,sans-serif;letter-spacing:.15em;margin-left:10px}
+.editor-view{font-size:12px}
+.editor-main{max-width:1260px;margin:auto;padding:60px 30px}
+.editor-title,.list-heading,.form-heading{display:flex;justify-content:space-between;align-items:center;gap:20px}
+.editor h1{font:500 48px 'Cormorant Garamond',serif;margin:8px 0}
+.editor-title p,.preview>p{font-size:13px;color:#757b76}
+.editor-kicker{font-size:9px;letter-spacing:.16em;font-weight:700;color:#858e87}
+.primary{background:#303b34;color:white;border:0;padding:15px 21px;font-size:12px;font-weight:700}
+.editor-note{margin:35px 0;background:#e6e9e4;padding:16px;font-size:12px;color:#606b62}
+.editor-workspace{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:35px}
+.editor-form,.preview,.editor-list{background:white;padding:30px;border:1px solid #e0e3de}
+.editor h2{font:500 30px 'Cormorant Garamond',serif;margin:8px 0 20px}
+.editor-form label{display:block;font-size:12px;font-weight:700;margin:0 0 18px}
+.editor-form label small{font-weight:400;color:#8c938e}
+.editor-form input:not([type=radio]):not([type=checkbox]),.editor-form textarea{display:block;width:100%;border:1px solid #cdd3cd;background:#fff;padding:12px;margin-top:8px;color:#252a27;outline-color:#728578}
+.editor-form input[type=file]{font-size:11px}
+.editor-form fieldset{border:0;padding:0;margin:0 0 20px}
+.editor-form legend{font-size:12px;font-weight:700;margin-bottom:8px}
+.template-options{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.template-options label{border:1px solid #d6dbd5;padding:12px;margin:0;font-weight:400}
+.template-options label.active{border-color:#405b49;background:#eef3ed}
+.template-options input{margin-right:6px}
+.template-options small{display:block;margin:6px 0 0 20px}
+.form-row{display:flex;align-items:center;gap:30px}
+.form-row>label{flex:1}
+.check{display:flex!important;align-items:center;gap:8px}
+.error{color:#a33636;font-size:12px}
+.plain,.delete{border:0;background:none;color:#637168;font-size:11px;text-decoration:underline;padding:5px}
+.delete{color:#a05750;margin-left:auto}
+.preview{background:#e7e8e4}
+.preview .card{max-width:360px;margin:30px auto;color:#ddd}
+.editor-list h2 span{font:12px Arial;color:#8b938e}
+.list-row{display:flex;align-items:center;gap:16px;padding:12px 0;border-top:1px solid #e5e7e4}
+.list-row img{width:54px;height:60px;object-fit:cover;background:#777}
+.list-row strong,.list-row small{display:block;font-size:12px}
+.list-row small{font-size:10px;color:#8a928c;margin-top:7px}
+
+@media(max-width:767px){
+.editor-main{padding:40px 18px}
+.editor-title{align-items:flex-start;flex-direction:column}
+.editor h1{font-size:39px}
+.editor-workspace{grid-template-columns:1fr}
+.editor-form,.preview,.editor-list{padding:20px}
+.editor-header{padding:15px 20px}
+.editor-brand span{font-size:8px}
+.list-heading{align-items:flex-start}
+.template-options label{padding:8px}
+.template-options small{margin-left:0}
+.form-row{gap:12px}
+}
