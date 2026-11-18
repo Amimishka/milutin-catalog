@@ -57,6 +57,17 @@ function Card({item, index = 0, onClick, preview = false}) {
   );
 }
 
+function ContactLink({title}) {
+  const email = import.meta.env.VITE_ATELIER_EMAIL?.trim();
+  const label = title ? 'Уточнить наличие' : 'Связаться с ателье';
+  if (email) {
+    const subject = title ? 'Уточнить наличие · ' + title : 'Запись в ателье';
+    return <a className="text-link" href={'mailto:' + email + '?subject=' + encodeURIComponent(subject)}>{label} ↗</a>;
+  }
+  return <details className="contact-details"><summary className="text-link">{label}</summary>
+    <p>Это демонстрационный каталог. Контакты ателье появятся при публикации.</p></details>;
+}
+
 function Modal({item, onClose}) {
   const ref = React.useRef(null);
   useEffect(() => {
@@ -69,13 +80,13 @@ function Modal({item, onClose}) {
         <button className="modal-close" type="button" onClick={onClose} aria-label="Закрыть">×</button>
         <img className="modal-product" src={item.image} alt={item.title}/>
         <div className="modal-copy"><span className="eyebrow">Авторская коллекция</span><h2 id="modal-title">{item.title}</h2><Ornament/>
-        <p>{item.materials}</p><p>{item.shortDescription}</p><a className="text-link" href={'mailto:atelier@example.com?subject='+encodeURIComponent('Уточнить наличие · '+item.title)}>Уточнить наличие ↗</a></div>
+        <p>{item.materials}</p><p>{item.shortDescription}</p><ContactLink title={item.title}/></div>
       </div>}
     </dialog>
   );
 }
 
-const navigation = [['Коллекции','collections'],['Мастерская','atelier'],['Об авторе','about'],['Процесс','process'],['Ателье','atelier'],['Контакты','contacts']];
+const navigation = [['Коллекции','collections'],['Мастерская','atelier'],['Об авторе','about'],['Процесс','process'],['Ателье','appointment'],['Контакты','contacts']];
 
 function Hero({onSelect}) {
   const [menu, setMenu] = useState(false);
@@ -83,11 +94,12 @@ function Hero({onSelect}) {
     <header className="hero" id="top" onKeyDown={e => {if(e.key==='Escape') setMenu(false)}}>
       <nav className="nav" aria-label="Основная навигация">
         <a href="#top" className="monogram" aria-label="Михаил Милютин, в начало">М</a>
-        <button className="menu-toggle" type="button" aria-expanded={menu} aria-controls="nav-links" onClick={()=>setMenu(!menu)}>{menu?'Закрыть':'Меню'}<span aria-hidden="true">{menu?'×':'☰'}</span></button>
+        <a className="mobile-catalog-link" href="#collections" onClick={()=>setMenu(false)}>Коллекции</a>
+        <button className="menu-toggle" type="button" aria-expanded={menu} aria-controls="nav-links" onClick={()=>setMenu(!menu)}>{menu?'Закрыть':'Меню'}<span className="menu-icon" aria-hidden="true"/></button>
         <div id="nav-links" className={'nav-links' + (menu?' is-open':'')}>{navigation.map(([label,id])=><a key={label} href={'#'+id} onClick={()=>setMenu(false)}>{label}</a>)}</div>
       </nav>
       <div className="hero-heading"><h1><span>Михаил</span><span>Милютин</span></h1><Ornament/><p>Драгоценности<br/>вне времени</p></div>
-      <button className="hero-jewel" type="button" onClick={onSelect} aria-label="Посмотреть колье «Гранат многогранный»"><img src={displayImage('necklace')} alt="Колье из разноцветных гранатов" fetchPriority="high"/></button>
+      <button disabled={!onSelect} className="hero-jewel" type="button" onClick={onSelect} aria-label="Посмотреть колье «Гранат многогранный»"><img src={displayImage('necklace')} alt="Колье из разноцветных гранатов" fetchPriority="high"/></button>
       <div className="hero-side hero-side--left" aria-hidden="true"><span>ММ</span><Ornament kind="finial"/><span>Москва</span></div>
       <div className="hero-side hero-side--right" aria-hidden="true"><span>Форма<br/>и материя</span><Ornament kind="finial"/><span>Ателье</span></div>
       <a className="hero-seal" href="#collections" aria-label="К коллекциям"><Ornament kind="fleur"/></a>
@@ -101,10 +113,11 @@ function Storefront() {
   const cards = [...defaults,...readCards()].filter(x=>x.published && !hidden.includes(x.slug)).sort((a,b)=>a.sortOrder-b.sortOrder);
   return (
     <div className="storefront">
-      <Hero onSelect={()=>setSelected(defaults[0])}/>
+      <Hero onSelect={hidden.includes(defaults[0].slug) ? undefined : ()=>setSelected(defaults[0])}/>
       <main>
         <section className="catalog" id="collections" aria-labelledby="collections-title">
           <div className="section-title"><Ornament/><h2 id="collections-title">Коллекции</h2><Ornament/></div>
+          {!cards.length && <p className="catalog-empty">Коллекции пока не опубликованы.</p>}
           <div className="catalog-grid">{cards.map((item,i)=><Card key={item.slug} item={item} index={i} onClick={()=>setSelected(item)}/>)}</div>
         </section>
         <section className="story" id="atelier"><Ornament kind="fleur"/><span className="eyebrow" id="about">Мастерская Михаила Милютина</span>
@@ -112,7 +125,7 @@ function Storefront() {
           <a href="#contacts" className="text-link">Связаться с ателье ↗</a>
         </section>
       </main>
-      <footer id="contacts"><a href="#collections">Каталог</a><a href="/editor">Демо редактора</a><span className="footer-signature"><Ornament/>Москва · По записи<Ornament/></span><a href="mailto:atelier@example.com">Связаться с ателье ↗</a><a href="#top">Наверх ↑</a></footer>
+      <footer id="contacts"><a href="#collections">Каталог</a><a href="/editor">Демо редактора</a><span className="footer-signature" id="appointment"><Ornament/>Москва · По записи<Ornament/></span><ContactLink/><a href="#top">Наверх ↑</a></footer>
       <Modal item={selected} onClose={()=>setSelected(null)}/>
     </div>
   );

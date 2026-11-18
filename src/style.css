@@ -57,7 +57,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid #efdcac; outline-offs
 }
 .nav-links a, footer a { transition: color .25s; }
 .nav-links a:hover, footer a:hover { color: white; text-decoration: underline; text-underline-offset: .4em; }
-.menu-toggle { display: none; }
+.menu-toggle, .mobile-catalog-link { display: none; }
+.catalog-empty { text-align: center; padding: 2rem 0; }
+.hero-jewel:disabled { cursor: default; }
+body:has(dialog[open]) { overflow: hidden; }
 .hero-heading {
   position: absolute; top: 16%; left: 50%; transform: translateX(-50%);
   text-align: center; width: max-content; max-width: 65%;
@@ -195,11 +198,20 @@ footer { display: flex; align-items: center; justify-content: space-between; tex
   .footer-signature img { display: none; }
 }
 @media (max-width:767px) {
-  .hero { height: clamp(505px,min(150vw,81svh),760px); background-size: 169% 100%; }
+  .hero { height: clamp(505px,min(150vw,81svh),760px); background-size: 153% 100%; }
   .nav { height: 12%; }
   .monogram { font-size: 7cqh; }
   .menu-toggle { display: flex; align-items: center; gap: 6px; justify-content: center; position: absolute; right: 4%; top: 10%; padding: 10px; min-height: 44px; border: 0; color: var(--paper); background: #14120fe6; }
-  .menu-toggle span { font: 16px Georgia,serif; }
+  .mobile-catalog-link, .menu-toggle {
+    display: inline-flex; align-items: center; justify-content: center; position: absolute;
+    top: 8%; min-height: 44px; padding: 0 9px; background: #171511e8; color: var(--paper);
+    font: 600 11px var(--serif); letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid #71634c; box-shadow: inset 0 0 0 2px #191611;
+  }
+  .mobile-catalog-link { left: 4%; }
+  .menu-icon { width: 14px; height: 7px; border-block: 1px solid currentColor; }
+  .menu-toggle[aria-expanded=true] .menu-icon { height: 1px; border-bottom: 0; }
+  .nav-links.is-open a { border-bottom: 1px solid #78674966; }
   .nav-links { display: none; }
   .nav-links.is-open { display: grid; position: absolute; top: 100%; inset-inline: 4%; height: auto; padding: 8px 16px; grid-template-columns: 1fr 1fr; gap: 0 12px; background: var(--stone); border: 3px double #8d7d64; }
   .nav-links a, .nav-links a:nth-child(4) { grid-column: auto; display: grid; align-content: center; min-height: 45px; font-size: 12px; }
@@ -209,14 +221,20 @@ footer { display: flex; align-items: center; justify-content: space-between; tex
   .hero-jewel { height: min(34cqh,55vw); }
   .hero-side { display: none; }
   .catalog { padding: 0 6% 25px; }
-  .catalog-grid { grid-template-columns: minmax(0,1fr); justify-content: center; gap: 18px; max-width: 440px; margin: auto; }
+  .catalog-grid { grid-template-columns: minmax(0,1fr); justify-content: center; gap: 18px; max-width: 410px; margin: auto; }
   .section-title { padding: 10px 0; gap: 12px; }
   .section-title h2 { font-size: clamp(29px,7vw,42px); }
   .section-title .ornament { flex: 1; height: 18px; width: 0; }
   .card,.card--wide { grid-column: auto; }
-  .card-number { font-size: 22px; }
+  .card-number { font-size: 20px; }
+  .card .card-frame { aspect-ratio: .58; }
+  .card .caption-copy small { font-size: max(11px,3.65cqw); }
+  .story p { font-size: 18px; }
+  footer a { display: grid; place-items: center; min-height: 44px; }
+  .modal { width: min(94vw,480px); max-height: 90svh; }
+  .modal-product { border-bottom: 1px solid #77664e; }
   .card--wide .card-button { display: block; }
-  .card--wide .card-frame { width: auto; margin: 0 2%; aspect-ratio: .5; }
+  .card--wide .card-frame { width: auto; margin: 0 2%; aspect-ratio: .58; }
   .card--wide .frame-art, .card--wide .card-aperture { height: 100%; }
   .card--wide .card-photo { height: 66%; }
   .card--wide .frame-caption { display: flex; }
@@ -228,3 +246,6 @@ footer { display: flex; align-items: center; justify-content: space-between; tex
   .modal-copy { padding: 24px; }
 }
 @media (prefers-reduced-motion:reduce) { html { scroll-behavior: auto; } }
+.contact-details summary { cursor: pointer; list-style: none; }
+.contact-details summary::-webkit-details-marker { display: none; }
+.contact-details p { max-width: 30ch; margin: 8px auto; font: 16px/1.4 var(--serif); }

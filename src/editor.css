@@ -51,3 +51,16 @@
 .template-options small{margin-left:0}
 .form-row{gap:12px}
 }
+@media(max-width:767px){
+  .editor-main { padding: 24px 12px; }
+  .editor-workspace { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .editor-form,.preview,.editor-list { min-width: 0; padding: 16px; }
+  .editor-form input,.editor-form textarea { font-size: 16px; min-width: 0; }
+  .editor .primary { min-height: 44px; }
+  .list-row { display: grid; grid-template-columns: 42px minmax(0,1fr) auto; gap: 9px; }
+  .list-row img { width: 42px; height: 52px; }
+  .list-row strong,.list-row small { overflow-wrap: anywhere; }
+  .list-row .delete,.list-heading .plain { min-height: 44px; }
+  .template-options { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .template-options label { padding: 8px 4px; }
+}
