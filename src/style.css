@@ -199,11 +199,18 @@ footer { display: flex; align-items: center; justify-content: space-between; tex
 }
 @media (max-width:767px) {
   .hero { height: clamp(480px,min(145vw,78svh),680px); background-size: auto 100%; }
-  .nav { height: 12%; }
-  .monogram { font-size: 7cqh; }
+  .nav {
+    height: 64px;
+    background: #171511 url('../assets/display/stone.webp') center / 280px;
+    border-bottom: 3px double #8d7c60;
+  }
+  .monogram {
+    top: 4px; width: 48px; height: 54px;
+    font-size: 34px; padding-bottom: 4px; border-width: 2px;
+  }
   .menu-toggle {
     display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    position: absolute; right: 3%; top: 5%; min-width: 44px; min-height: 44px;
+    position: absolute; right: 3%; top: 9px; min-width: 44px; min-height: 44px;
     padding: 0 6px; border: 0; background: transparent; color: var(--paper);
     font: 600 10px var(--serif); letter-spacing: .1em; text-transform: uppercase;
     text-shadow: 0 1px 4px #000, 0 0 6px #000;
@@ -214,7 +221,7 @@ footer { display: flex; align-items: center; justify-content: space-between; tex
   .nav-links { display: none; }
   .nav-links.is-open { display: grid; position: absolute; top: 100%; inset-inline: 4%; height: auto; padding: 8px 16px; grid-template-columns: 1fr 1fr; gap: 0 12px; background: var(--stone); border: 3px double #8d7d64; }
   .nav-links a, .nav-links a:nth-child(4) { grid-column: auto; display: grid; align-content: center; min-height: 45px; font-size: 12px; }
-  .hero-heading { top: 19%; max-width: 88%; }
+  .hero-heading { top: max(80px, 19%); max-width: 88%; }
   .hero-heading h1 { font-size: min(10.5cqh,14vw); }
   .hero-heading p { font-size: clamp(12px,2.4cqh,18px); letter-spacing: .29em; }
   .hero-jewel { height: min(33cqh,53vw); }
