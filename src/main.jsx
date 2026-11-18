@@ -94,7 +94,6 @@ function Hero({onSelect}) {
     <header className="hero" id="top" onKeyDown={e => {if(e.key==='Escape') setMenu(false)}}>
       <nav className="nav" aria-label="Основная навигация">
         <a href="#top" className="monogram" aria-label="Михаил Милютин, в начало">М</a>
-        <a className="mobile-catalog-link" href="#collections" onClick={()=>setMenu(false)}>Коллекции</a>
         <button className="menu-toggle" type="button" aria-expanded={menu} aria-controls="nav-links" onClick={()=>setMenu(!menu)}>{menu?'Закрыть':'Меню'}<span className="menu-icon" aria-hidden="true"/></button>
         <div id="nav-links" className={'nav-links' + (menu?' is-open':'')}>{navigation.map(([label,id])=><a key={label} href={'#'+id} onClick={()=>setMenu(false)}>{label}</a>)}</div>
       </nav>
